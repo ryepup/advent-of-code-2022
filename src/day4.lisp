@@ -8,9 +8,12 @@
   (and (<= (sa-start a) (sa-start b))
        (>= (sa-end a) (sa-end b))))
 
+(defmethod contains ((a section-assignment) (b integer))
+  (<= (sa-start a) b (sa-end a)))
+
 (defmethod overlaps ((a section-assignment) (b section-assignment))
-  (or (<= (sa-start b) (sa-start a) (sa-end b))
-      (<= (sa-start b) (sa-end a) (sa-end b))))
+  (or (contains a (sa-start b))
+      (contains a (sa-end b))))
 
 (defun parse-section-assignment (s)
   (let ((idx (position #\- s)))
@@ -29,7 +32,6 @@
     (for (values a b) = (parse-assignment line))
     (counting (or (contains a b)
                   (contains b a)))))
-
 
 (defun day4-2 ()
   (iter (for line in-file "src/day4.txt" using #'read-line)
