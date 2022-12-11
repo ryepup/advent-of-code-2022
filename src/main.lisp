@@ -31,17 +31,38 @@
        (:paper 2)
        (:scissors 3))
      (cond
-      ((eq them us) 3)
-      ((or (and (eq them :rock) (eq us :paper))
-           (and (eq them :paper) (eq us :scissors))
-           (and (eq them :scissors) (eq us :rock))) 6)
+      ((eq us them) 3)
+      ((eq us (our-move them :win)) 6)
       (t 0))))
 
-(defun read-guide ()
+(defun decode-outcome (c)
+  (ecase c
+    ((#\X) :lose)
+    ((#\Y) :draw)
+    ((#\Z) :win)))
+
+(defun read-guide (decoder)
   (iter (for line in-file "src/day2.txt" using #'read-line)
     (collect (cons (decode (char line 0))
-                   (decode (char line 2))))))
+                   (funcall decoder (char line 2))))))
 
 (defun total-score ()
-  (iter (for (them . us) in (read-guide))
+  (iter (for (them . us) in (read-guide #'decode))
+    (sum (score them us))))
+
+(defun our-move (them outcome)
+  (ecase outcome
+    (:draw them)
+    (:win (ecase them
+            (:rock :paper)
+            (:paper :scissors)
+            (:scissors :rock)))
+    (:lose (ecase them
+             (:rock :scissors)
+             (:paper :rock)
+             (:scissors :paper)))))
+
+(defun total-score-outcome ()
+  (iter (for (them . outcome) in (read-guide #'decode-outcome))
+    (for us = (our-move them outcome))
     (sum (score them us))))
