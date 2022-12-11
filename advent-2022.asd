@@ -5,9 +5,11 @@
   :author "Ryan Davis <ryepup@gmail.com>"
   :license "MIT"
   :depends-on ("iterate")
+  :serial t
   :components ((:module "src"
                         :components
-                        ((:file "main"))))
+                        ((:file "main")
+                         (:file "day3"))))
   :description ""
   :in-order-to ((test-op (test-op "advent-2022/tests"))))
 
