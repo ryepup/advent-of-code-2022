@@ -4,7 +4,7 @@
   :version "0.0.0"
   :author "Ryan Davis <ryepup@gmail.com>"
   :license "MIT"
-  :depends-on ()
+  :depends-on ("iterate")
   :components ((:module "src"
                         :components
                         ((:file "main"))))
